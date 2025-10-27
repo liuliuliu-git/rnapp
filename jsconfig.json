@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "@/*": ["./src/*"]//使得编辑器识别@符号代表src目录
+      }
+    },
+    "exclude": ["node_modules", "**/node_modules/*"]
+  }
+  
