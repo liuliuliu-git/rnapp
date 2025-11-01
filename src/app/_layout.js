@@ -1,41 +1,17 @@
-import { Stack, useRouter } from 'expo-router'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { TouchableOpacity, View } from 'react-native'
-
+import { Stack } from 'expo-router'
+import tabOptions from '@/options/tabOptions'
+import screenOptions from '@/options/screenOptions'
+import ModalCloseButton from '@/components/shared/ModalCloseButton'
 /**
- * 模态页关闭按钮组件
+ * 全局布局配置
  */
-function CloseButton() {
-  const router = useRouter()
-
-  return (
-    <View style={{ width: 30 }}>
-      <TouchableOpacity onPress={() => router.dismiss()}>
-        <MaterialCommunityIcons name="close" size={30} color="#1f99b0" />
-      </TouchableOpacity>
-    </View>
-  )
-}
-
 export default function Layout() {
   return (
     <Stack
-      screenOptions={{
-        title: '', // 默认标题为空
-        headerTitleAlign: 'center', // 安卓标题栏居中
-        animation: 'slide_from_right', // 安卓使用左右切屏
-        headerTintColor: '#1f99b0', // 导航栏中文字、按钮、图标的颜色
-        // 标题组件的样式
-        headerTitleStyle: {
-          fontWeight: '400',
-          color: '#2A2929',
-          fontSize: 16,
-        },
-        headerBackButtonDisplayMode: 'minimal', // 设置返回按钮只显示箭头，不显示文字
-      }}
+      screenOptions={screenOptions}
     >
       {/* Tabs */}
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={tabOptions} />
 
       {/* Cards */}
       <Stack.Screen name="articles/index" options={{ title: '通知' }} />
@@ -50,7 +26,7 @@ export default function Layout() {
           presentation: 'modal',
           animation: 'slide_from_bottom', // 从底部滑入
           title: '老师详情',
-          headerLeft: () => <CloseButton />,
+          headerLeft: () => <ModalCloseButton />,
         }}
       />
     </Stack>
