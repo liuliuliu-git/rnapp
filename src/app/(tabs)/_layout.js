@@ -2,7 +2,7 @@ import { NativeTabs, Icon, Label } from 'expo-router/unstable-native-tabs'
 import { Tabs } from 'expo-router'
 import { Platform } from 'react-native'
 import { SimpleLineIcons } from '@expo/vector-icons'
-
+import { DynamicColorIOS } from 'react-native';
 /**
  * TabBar 图标组件
  * @param props
@@ -15,7 +15,22 @@ export default function TabLayout() {
   // iOS 使用原生液态玻璃 Tabs
   if (Platform.OS === 'ios') {
     return (
-      <NativeTabs tintColor="#1f99b0" disableTransparentOnScrollEdge>
+      <NativeTabs tintColor="#1f99b0" disableTransparentOnScrollEdge
+        labelStyle={{
+          // For the text color
+          color: DynamicColorIOS({
+            dark: 'white',
+            light: 'black',
+          }),
+        }}
+        iconStyle={{
+          // For the icon color
+          tintColor: DynamicColorIOS({
+            dark: 'white',
+            light: 'black',
+          }),
+        }}
+      >
         <NativeTabs.Trigger name="index">
           <Label>发现</Label>
           <Icon sf={{ default: 'play.house', selected: 'play.house.fill' }} />
