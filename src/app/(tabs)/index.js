@@ -1,34 +1,46 @@
-import {
-  ScrollView,
-  StyleSheet,
-} from 'react-native'
+import { ScrollView, StyleSheet } from 'react-native'
+
 import useFetchData from '@/hooks/useFetchData'
 import Loading from '@/components/shared/Loading'
 import NetworkError from '@/components/shared/NetworkError'
 import Slides from '@/components/(tabs)/index/Slides'
 import CoursesList from '@/components/(tabs)/index/CoursesList'
+
 export default function Index() {
   const url = '/'
   const { data, loading, error, onReload } = useFetchData(url)
   const { recommendedCourses, likesCourses, introductoryCourses } = data
 
-  // 加载中
-  if (loading) {
-    return <Loading />
+  /**
+   * 根据数据加载状态，渲染不同的内容
+   */
+  const renderContent = () => {
+    // 加载中
+    if (loading) {
+      return <Loading />
+    }
+
+    // 网络错误
+    if (error) {
+      return <NetworkError onReload={onReload} />
+    }
+
+    return (
+      <>
+        {/* 推荐的课程 */}
+        <Slides courses={recommendedCourses} />
+        <CoursesList courses={likesCourses} title="人气视频课程" />
+        <CoursesList courses={introductoryCourses} title="入门视频课程" />
+      </>
+    )
   }
-
-  // 网络错误
-  if (error) {
-    return <NetworkError onReload={onReload} />
-  }
-
-
 
   return (
-    <ScrollView style={styles.container}>
-      <Slides courses={recommendedCourses} />
-      <CoursesList courses={likesCourses} title="热门课程" />
-      <CoursesList courses={introductoryCourses} title="入门课程" />
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
+      {renderContent()}
     </ScrollView>
   )
 }
@@ -38,5 +50,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-
+  contentContainer: {
+    minHeight: '76%',
+  },
 })

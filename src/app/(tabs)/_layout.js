@@ -15,22 +15,7 @@ export default function TabLayout() {
   // iOS 使用原生液态玻璃 Tabs
   if (Platform.OS === 'ios') {
     return (
-      <NativeTabs tintColor="#1f99b0" disableTransparentOnScrollEdge
-        labelStyle={{
-          // For the text color
-          color: DynamicColorIOS({
-            dark: 'white',
-            light: 'black',
-          }),
-        }}
-        iconStyle={{
-          // For the icon color
-          tintColor: DynamicColorIOS({
-            dark: 'white',
-            light: 'black',
-          }),
-        }}
-      >
+      <NativeTabs tintColor="#1f99b0" disableTransparentOnScrollEdge>
         <NativeTabs.Trigger name="index">
           <Label>发现</Label>
           <Icon sf={{ default: 'play.house', selected: 'play.house.fill' }} />
@@ -43,6 +28,7 @@ export default function TabLayout() {
           <Icon sf={{ default: 'person', selected: 'person.fill' }} />
           <Label>我的</Label>
         </NativeTabs.Trigger>
+
       </NativeTabs>
     )
   }
