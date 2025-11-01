@@ -1,17 +1,20 @@
-import { useReducer, useEffect } from 'react'
+import { useEffect, useReducer } from 'react'
 import { get } from '@/utils/request'
 
+// 初始状态
 const initialState = {
   data: {},
   loading: true,
   error: false,
+  refreshing: false,
 }
-//定义操作类型
+
 // 定义 action 类型
 const FETCH_SUCCESS = 'FETCH_SUCCESS'
 const FETCH_ERROR = 'FETCH_ERROR'
 const SET_DATA = 'SET_DATA'
 const RELOAD_START = 'RELOAD_START'
+const SET_REFRESHING = 'SET_REFRESHING'
 
 // 定义 reducer 函数
 const reducer = (state, action) => {
@@ -21,6 +24,7 @@ const reducer = (state, action) => {
         ...state,
         loading: false,
         error: false,
+        refreshing: false,
         data: action.payload,
       }
     case FETCH_ERROR:
@@ -28,6 +32,7 @@ const reducer = (state, action) => {
         ...state,
         loading: false,
         error: true,
+        refreshing: false,
       }
     case SET_DATA:
       return {
@@ -40,10 +45,16 @@ const reducer = (state, action) => {
         loading: true,
         error: false,
       }
+    case SET_REFRESHING:
+      return {
+        ...state,
+        refreshing: action.payload,
+      }
     default:
       return state
   }
 }
+
 /**
  * 自定义 Hooks 获取数据
  * @param {string} url - API 请求路径（如 '/articles'）
@@ -56,7 +67,9 @@ const reducer = (state, action) => {
  * }}
  */
 const useFetchData = (url, params = {}) => {
+  // 使用 useReducer 初始化
   const [state, dispatch] = useReducer(reducer, initialState)
+
   /**
    * 请求接口
    * @returns {Promise<void>}
@@ -69,6 +82,7 @@ const useFetchData = (url, params = {}) => {
       dispatch({ type: FETCH_ERROR })
     }
   }
+
   /**
    * 重新加载
    * @returns {Promise<void>}
@@ -77,6 +91,16 @@ const useFetchData = (url, params = {}) => {
     dispatch({ type: RELOAD_START })
     await fetchData()
   }
+
+  /**
+   * 刷新数据（带 refreshing 状态）
+   * @returns {Promise<void>}
+   */
+  const onRefresh = async () => {
+    dispatch({ type: SET_REFRESHING, payload: true })
+    await fetchData()
+  }
+
   /**
    * 设置数据
    * @param {object} data - 数据
@@ -84,13 +108,17 @@ const useFetchData = (url, params = {}) => {
   const setData = (data) => {
     dispatch({ type: SET_DATA, payload: data })
   }
+
   useEffect(() => {
     fetchData()
   }, [url, JSON.stringify(params)])
+
   return {
     ...state,
     setData,
     onReload,
+    onRefresh,
   }
 }
+
 export default useFetchData
