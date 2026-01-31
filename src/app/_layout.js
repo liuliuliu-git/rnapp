@@ -16,6 +16,7 @@ export default function Layout() {
       {/* Cards */}
       <Stack.Screen name="articles/index" options={{ title: '通知' }} />
       <Stack.Screen name="settings/index" options={{ title: '设置' }} />
+      <Stack.Screen name="articles/[id]" options={{ title: '文章详情' }} />
       <Stack.Screen name="courses/[id]" options={{ title: '课程详情' }} />
       <Stack.Screen name="search/index" options={{ title: '搜索' }} />
 
