@@ -14,10 +14,14 @@ import Loading from '@/components/shared/Loading'
 import NetworkError from '@/components/shared/NetworkError'
 import NoData from '@/components/shared/NoData'
 
+import { useState } from 'react'
+import { get } from '@/utils/request'
+
 export default function Index() {
   const url = '/articles'
   const { data, setData, loading, refreshing, onRefresh, error, onReload } = useFetchData(url)
   const { articles } = data
+  const [page, setPage] = useState(1)
 
   // 加载中
   if (loading) {
@@ -59,6 +63,25 @@ export default function Index() {
     )
   }
 
+  /**
+   * 加载更多
+   */
+  const onEndReached = async () => {
+    // 页面数 + 1
+    const nextPage = page + 1
+    setPage(nextPage)
+    // console.log(nextPage)
+
+    // 请求接口
+    const { data } = await get(url, { page: nextPage })
+    // console.log(data)
+
+    // 将新数据追加到现有列表中
+    setData((prevData) => ({
+      articles: [...prevData.articles, ...data.articles],
+    }))
+  }
+
   return (
     <FlatList
       style={styles.container}
@@ -69,12 +92,10 @@ export default function Index() {
       ItemSeparatorComponent={renderSeparator}
       ListEmptyComponent={<NoData />}
       refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          tintColor={'#1f99b0'}
-        />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={'#1f99b0'} />
       }
+      onEndReached={onEndReached}
+      onEndReachedThreshold={0.1}
     />
   )
 }
